@@ -1,33 +1,44 @@
 import React from 'react'
-import * as xlsx from 'xlsx/xlsx.mjs';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer} from 'react-toastify';
+import Navbar from './Components/Navbar/Navbar'
+import {BrowserRouter,Routes,Route} from "react-router-dom"
+import Home from './Components/Pages/Home'
+import Seller from './Components/Pages/Seller'
+import Contact from './Components/Pages/Contact'
+import Cart from './Components/Pages/Cart/Cart'
+import More from './Components/Pages/More'
+import PageNotFound from './Components/Pages/PageNotFound'
+import Login from './Components/Pages/AuthPages/Login'
+import ProductContext from './Api/ProductContext'
+import Products from './Components/Products/Products'
+import Store from './Redux/Store/Store'
+import  {Provider} from "react-redux"
+// import Signup from './Components/Pages/AuthPages/Signup'
+
+
 
 const App = () => {
-  const readUploadFile = (e) => {
-    e.preventDefault();
-    if (e.target.files) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const data = e.target.result;
-            const workbook = xlsx.read(data, { type: "array" });
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            const json = xlsx.utils.sheet_to_json(worksheet);
-            console.log(json);
-        };
-        reader.readAsArrayBuffer(e.target.files[0]);
-    }
-}
 
   return (
-    <form>
-    <label htmlFor="upload">Upload File</label>
-    <input
-        type="file"
-        name="upload"
-        id="upload"
-        onChange={readUploadFile}
-    />
-</form>
+    <BrowserRouter>
+    <Provider store={Store}>
+    <ProductContext>
+      <Navbar/>
+      <ToastContainer position='top-right'/>
+      <Routes>
+        <Route path='/' element={<Home/>}></Route>
+        <Route path='/product/:name' element={<Products/>}></Route>
+        <Route path='/seller' element={<Seller/>}></Route>
+        <Route path='/contact' element={<Contact/>}></Route>
+        <Route path='/cart' element={<Cart/>}></Route>
+        <Route path='/more' element={<More/>}></Route>
+        * <Route path='/login' element={<Login/>}></Route> *
+        <Route path='*' element={<PageNotFound/>}></Route>
+      </Routes>
+      </ProductContext>
+      </Provider>
+    </BrowserRouter>
   )
 }
 
